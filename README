@@ -1,4 +1,4 @@
-#CPLUS Login System
+# CPLUS Login System
 Create an account with this program and interact with the program using your accounts
 ## Aim
 The aim of this project is to let users store their ID and passwords. Future work would include features that let users interact with their accounts. This program is written in C++.
