@@ -8,6 +8,11 @@ The program is divided into phases (WIP):
 * Phase 1B (14 May 2021): The program can read all the stored IDs and passwords in a file.
 * Phase 1C (15 May 2021): Users can now login using their existing ID and password if they have already registered. The program will also prevent registration using existing user IDs.
 
+## Guide
+* 'login' : Contains the program that is used to register or login to user's accounts.
+* 'login.cpp': Contains the code to run the program, written in C++.
+* 'loginfile.txt': Contains the file that store user ID and passwords. 
+* 
 ## Setting Up
 This program is written using Visual Studio Code in Ubuntu, but can be run using any mainstream operating system. 
 In order to modify this program and compile it, pleasure ensure you have MingW and the G++ compiler. These programs should be readily available for Linux distributions.
