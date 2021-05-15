@@ -12,7 +12,7 @@ The program is divided into phases (WIP):
 * 'login' : Contains the program that is used to register or login to user's accounts.
 * 'login.cpp': Contains the code to run the program, written in C++.
 * 'loginfile.txt': Contains the file that store user ID and passwords. 
-* 
+
 ## Setting Up
 This program is written using Visual Studio Code in Ubuntu, but can be run using any mainstream operating system. 
 In order to modify this program and compile it, pleasure ensure you have MingW and the G++ compiler. These programs should be readily available for Linux distributions.
