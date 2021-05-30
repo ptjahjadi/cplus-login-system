@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
-#include <ctype.h>
+#include <cctype>
 using namespace std;
 
 // Maximum ID and password length is 20
@@ -29,7 +29,7 @@ int main() {
     #else
         system("clear");
     #endif
-
+    
     // Ask the user to register, login or exit
     string decision;
     do {
@@ -65,7 +65,6 @@ void registration() {
     AccountDetails* accounts = (AccountDetails*)malloc(sizeof(AccountDetails) * num_accounts);
     // Retrieve the details of all accounts registered in the file
     accounts = retrieve_account_details(accounts, num_accounts);
-    cout <<"LMAO" <<endl;
     //Open the file containing user ID and passwords for appending
     fstream loginfile;
     loginfile.open("loginfile.txt", ios::app);
@@ -244,12 +243,14 @@ AccountDetails* retrieve_account_details (AccountDetails* accounts, int num_acco
         accounts[i].my_id = (char*)malloc(sizeof(char) * MAX_LENGTH);
         accounts[i].my_password = (char*)malloc(sizeof(char) * MAX_LENGTH);
     }
+
     fstream loginfile;
     loginfile.open("loginfile.txt", ios::in);
     string text;
     string account_detail = "id";
 
     // Alternate between recording user ID and password
+    // Remove whitespaces (ws) when reading the file
     while (loginfile >> ws, getline(loginfile, text, ',')) {
         if (account_detail == "id") {
             strcpy(accounts[account_number].my_id, text.c_str());
