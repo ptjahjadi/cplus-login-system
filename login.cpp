@@ -292,7 +292,7 @@ AccountDetails* retrieve_account_details (AccountDetails* accounts, int num_acco
     return accounts;
 }
 
-// Function to let users interact with their account after successfully logging in
+// Function to let users interact with their account after successfully logging in (WIP)
 void account_activity(char* user_id, char* user_password, float *user_balance) {
     string decision;
     do {
