@@ -16,5 +16,5 @@ The program is divided into phases (WIP):
 
 ## Setting Up
 This program is written using Visual Studio Code in Ubuntu, but can be run using any mainstream operating system and can be written in any IDE. 
-In order to modify this program and compile it, pleasure ensure you have a G++ compiler. [Steven Zeil's tutorial](https://www.cs.odu.edu/~zeil/cs250PreTest/latest/Public/installingACompiler/#installing-the-cygwin-compiler) provides a great guide to set up the compiler.
+In order to modify this program and compile it, pleasure ensure you have a G++ compiler. [Steven Zeil's tutorial](https://www.cs.odu.edu/~zeil/cs250PreTest/latest/Public/installingACompiler/) provides a great guide to set up the compiler.
 Any command-line interpreter can be used to run the program (Windows CMD, Ubuntu Terminal, etc.).
