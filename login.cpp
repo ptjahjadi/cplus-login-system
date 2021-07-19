@@ -195,7 +195,9 @@ void login() {
             #endif
             return;
         }
-        cout << "ID not found. Please enter a registered ID or press 0 to exit:\n";
+        if (account_number == -1) {
+            cout << "ID not found. Please enter a registered ID or press 0 to exit:\n";
+        }
     } while (account_number == -1);
 
     // Check whether the password input matches the ID's registered password, or if they would like to exit

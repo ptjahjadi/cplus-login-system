@@ -1,1 +1,2 @@
 testid,testpass,100,
+testid2,testpass2,100,
