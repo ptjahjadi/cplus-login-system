@@ -15,6 +15,6 @@ The program is divided into phases (WIP):
 * 'loginfile.txt': Contains the file that store user ID and passwords. 
 
 ## Setting Up
-This program is written using Visual Studio Code in Ubuntu, but can be run using any mainstream operating system. 
-In order to modify this program and compile it, pleasure ensure you have MingW and the G++ compiler. These programs should be readily available for Linux distributions.
+This program is written using Visual Studio Code in Ubuntu, but can be run using any mainstream operating system and can be written in any IDE. 
+In order to modify this program and compile it, pleasure ensure you have a G++ compiler. [Steven Zeil's tutorial](https://www.cs.odu.edu/~zeil/cs250PreTest/latest/Public/installingACompiler/#installing-the-cygwin-compiler) provides a great guide to set up the compiler.
 Any command-line interpreter can be used to run the program (Windows CMD, Ubuntu Terminal, etc.).
