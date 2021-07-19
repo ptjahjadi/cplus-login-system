@@ -1,3 +1,0 @@
-testid,testpass,100,
-testid2,testpass2,100,
-testid3,testpass3,100,
