@@ -1,6 +1,9 @@
 #ifndef FUNCTIONS_H_INCLUDED
 #define FUNCTIONS_H_INCLUDED
 
+// Assume that the longest possible input is 999 characters long
+#define MAX_LENGTH 999
+
 class AccountDetails {
     public:
         char* user_id; // user ID
