@@ -5,9 +5,6 @@
 #include "functions.h"
 using namespace std;
 
-// Assume that the longest possible input is 999 characters long
-#define MAX_LENGTH 999
-
 // Function to accept a new user's ID and password for registration to the system
 void registration() {
     int num_accounts = 0;   
