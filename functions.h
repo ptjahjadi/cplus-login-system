@@ -7,7 +7,7 @@ class AccountDetails {
         char* user_password; // user password
         int id_len; // length of user ID
         int pass_len; // length of user password
-        int balance;
+        int balance; // balance of the user account
     
     // Function to initialise account balance. Default is 100.
     void initialise_balance() {
@@ -17,7 +17,7 @@ class AccountDetails {
 
 void registration();
 void login();
-int check_id_validity(char* user_id, int id_len, int id_exists);
+int check_id_validity(char* user_id, int id_len, int num_accounts, AccountDetails* accounts);
 int check_password_validity(char* user_password, int pass_len);
 int check_alnum(char* string_check);
 void check_num_accounts(int *num_accounts);

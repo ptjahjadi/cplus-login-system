@@ -10,8 +10,7 @@ using namespace std;
 
 // Function to accept a new user's ID and password for registration to the system
 void registration() {
-    int i, num_accounts = 0;
-    int id_exists = 0;
+    int num_accounts = 0;   
     AccountDetails new_user;
 
     // Find number of accounts registered in the file
@@ -25,6 +24,7 @@ void registration() {
     
     new_user.user_id = (char*)malloc(sizeof(char) * MAX_LENGTH);
     new_user.user_password = (char*)malloc(sizeof(char) * MAX_LENGTH);
+    char* password_confirm = (char*)malloc(sizeof(char) * MAX_LENGTH);
 
     #if _WIN32
         system("cls");
@@ -37,40 +37,55 @@ void registration() {
     // Ensure that the user ID is alphanumeric and between 5 to 20 characters
     do { 
         cin >> new_user.user_id;
-        new_user.id_len = strlen(new_user.user_id);
-        id_exists = 0;
-        // Ensure that the user ID has not been taken by someone else
-        for (i = 0; i < num_accounts; i++) {
-            if (strcmp(new_user.user_id, accounts[i].user_id) == 0) {
-                id_exists = 1;
-                break;
-            }
-        }
+        // Back to home page when user inputs 0
         if (strcmp(new_user.user_id, "0") == 0) {
             #if _WIN32
                 system("cls");
             #else
                 system("clear");
             #endif
+            free(new_user.user_id);
+            free(new_user.user_password);
+            free(password_confirm);
+            free(accounts);
             return;
         }
-    } while (!check_id_validity(new_user.user_id, new_user.id_len, id_exists));
+        new_user.id_len = strlen(new_user.user_id);
+    } while (!check_id_validity(new_user.user_id, new_user.id_len, num_accounts, accounts));
 
     cout << "\nPlease set your password (5-20 characters) or input 0 to exit:\n";
-    
+    int pass_validity;
+
     // Ensure that the password is alphanumeric and between 5 to 20 characters
     do {
         cin >> new_user.user_password;
-        new_user.pass_len = strlen(new_user.user_password);
+        // Back to home page when user inputs 0
         if (strcmp(new_user.user_password, "0") == 0) {
             #if _WIN32
                 system("cls");
             #else
                 system("clear");
             #endif
+            free(new_user.user_id);
+            free(new_user.user_password);
+            free(password_confirm);
+            free(accounts);
             return;
         }
-    } while (!check_password_validity(new_user.user_password, new_user.pass_len));
+        new_user.pass_len = strlen(new_user.user_password);
+
+        // Ask user to confirm password by entering the password again
+        cout << "\nPlease enter your password again to confirm:\n";
+        cin >> password_confirm;
+
+        if (strcmp(new_user.user_password, password_confirm)) {
+            cout << "\nThe passwords do not match. Please enter a new password or press 0 to exit:\n";
+            pass_validity = 0;
+        }
+        else {
+            pass_validity = check_password_validity(new_user.user_password, new_user.pass_len);
+        }
+    } while (!pass_validity);
 
     new_user.initialise_balance();
     cout << "\nYour user ID is " << new_user.user_id << " and your password is " << new_user.user_password << ".\n";
@@ -96,13 +111,11 @@ void login() {
     AccountDetails* accounts = (AccountDetails*)malloc(sizeof(AccountDetails) * num_accounts);
     // Retrieve the details of all accounts registered in the file
     accounts = retrieve_account_details(accounts, num_accounts);
-
     #if _WIN32
         system("cls");
     #else
         system("clear");
     #endif
-
     cout << "Welcome back! Please input your user ID or press 0 to exit:\n";
 
     // Check whether the ID input by the user matches a registered ID, or if they would like to exit
@@ -120,6 +133,9 @@ void login() {
             #else
                 system("clear");
             #endif
+            free(my_id);
+            free(my_password);
+            free(accounts);
             return;
         }
         else if (account_number == -1) {
@@ -154,7 +170,7 @@ void login() {
                 break;
         }
 
-        // If the user presses 1, assist the user in resetting their password
+        // If the user inputs 1, assist the user in resetting their password
         else if (strcmp(my_password, "1") == 0) {
             #if _WIN32  
                 system("cls");
@@ -175,12 +191,16 @@ void login() {
 }
 
 // Function to check whether the input ID for registration is valid
-int check_id_validity(char* user_id, int id_len, int id_exists) {
-    if (id_exists == 1) {
-        cout << "\nUser ID already exists. Please input a different user ID or input 0 to exit.\n";
-        return 0;
+int check_id_validity(char* user_id, int id_len, int num_accounts, AccountDetails* accounts) {
+    // Ensure that the user ID has not been taken by someone else
+    int i;
+    for (i = 0; i < num_accounts; i++) {
+        if (strcmp(user_id, accounts[i].user_id) == 0) {
+            cout << "\nUser ID already exists. Please input a different user ID or input 0 to exit.\n";
+            return 0;
+        }
     }
-    else if (id_len < 5) {
+    if (id_len < 5) {
         cout << "\nUser ID is too short. Please input a user ID between 5-20 characters or input 0 to exit.\n";
         return 0;
     }
@@ -189,13 +209,13 @@ int check_id_validity(char* user_id, int id_len, int id_exists) {
         return 0;
     }
     else if (!check_alnum(user_id)) {
-        cout << "\nUser ID has to be alphanumeric. Please input a user ID between 5-20 characters or input 0 to exit.";
+        cout << "\nUser ID has to be alphanumeric. Please input a user ID between 5-20 characters or input 0 to exit.\n";
         return 0;
     }
     return 1;
 }
 
-// Function to check whether the input password for registration is valid
+// Function to check whether the input password for registration or reset is valid
 int check_password_validity(char* user_password, int pass_len) {
     if (pass_len < 5) {
         cout << "\nPassword is too short. Please input a password between 5-20 characters or input 0 to exit.\n";
@@ -279,24 +299,41 @@ AccountDetails* retrieve_account_details (AccountDetails* accounts, int num_acco
 void reset_password(AccountDetails reset_account, int account_number) {
     char* new_password = (char*)malloc(sizeof(char) * MAX_LENGTH);
     char* new_password_confirm = (char*)malloc(sizeof(char) * MAX_LENGTH);
+    int pass_validity, new_pass_len;
     cout << "Enter a new password or press 0 to exit:\n";
 
     do {
         cin >> new_password;
+        // Return back to home page if user inputs 0
         if (strcmp(new_password, "0") == 0) {
+            #if _WIN32  
+                system("cls");
+            #else
+                system("clear");
+            #endif
+            free(new_password);
+            free(new_password_confirm);
             return;
         }
-        cout << "\nPlease confirm your new password:\n";
+        // Ask user to confirm password by entering the password again
+        cout << "\nPlease enter your password again to confirm:\n";
         cin >> new_password_confirm;
         // Ask user to confirm password again if the passwords do not match
         if (strcmp(new_password, new_password_confirm)) {
             cout << "\nThe passwords do not match. Please enter a new password or press 0 to exit:\n";
+            pass_validity = 0;
         }
         // Ask user to choose a new password if the user inputs their current password
-        if (strcmp(new_password, reset_account.user_password) == 0) {
+        else if (strcmp(new_password, reset_account.user_password) == 0) {
             cout << "\nThis password is currently in use. Please enter a new password or press 0 to exit:\n";
+            pass_validity = 0;
         }
-    } while (strcmp(new_password, new_password_confirm) || (strcmp(new_password, reset_account.user_password) == 0));
+        // Check if the newly input password is valid
+        else {
+            new_pass_len = strlen(new_password);
+            pass_validity = check_password_validity(new_password, new_pass_len);
+        }
+    } while (!pass_validity);
 
     // Create a new temporary file that replaces the old user password with a new password
     fstream loginfile;
