@@ -16,6 +16,10 @@ class AccountDetails {
     void initialise_balance() {
         balance = 100;
     }
+
+    void alter_balance(int winnings) {
+        balance = balance + winnings;
+    }
 };  
 
 void registration();
@@ -26,6 +30,8 @@ int check_alnum(char* string_check);
 void check_num_accounts(int *num_accounts);
 AccountDetails* retrieve_account_details (AccountDetails* accounts, int num_accounts);
 void reset_password(AccountDetails reset_account, int account_number);
-void account_activity(AccountDetails login_account);
+void account_activity(AccountDetails login_account, int account_number);
+AccountDetails high_low(AccountDetails play_account);
+void write_account_balance(AccountDetails login_account, int account_number);
 
 #endif

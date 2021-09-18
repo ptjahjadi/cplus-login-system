@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
+#include <stdlib.h>
 #include <cctype>
 #include "functions.h"
 using namespace std;
@@ -153,7 +154,7 @@ void login() {
             #else
                 system("clear");
             #endif
-            account_activity(accounts[account_number]);
+            account_activity(accounts[account_number], account_number);
             break;
         }
 
@@ -187,61 +188,6 @@ void login() {
     free(accounts);
 }
 
-// Function to check whether the input ID for registration is valid
-int check_id_validity(char* user_id, int id_len, int num_accounts, AccountDetails* accounts) {
-    // Ensure that the user ID has not been taken by someone else
-    int i;
-    for (i = 0; i < num_accounts; i++) {
-        if (strcmp(user_id, accounts[i].user_id) == 0) {
-            cout << "\nUser ID already exists. Please input a different user ID or input 0 to exit.\n";
-            return 0;
-        }
-    }
-    if (id_len < 5) {
-        cout << "\nUser ID is too short. Please input a user ID between 5-20 characters or input 0 to exit.\n";
-        return 0;
-    }
-    else if (id_len > 20) {
-        cout << "\nUser ID is too long. Please input a user ID between 5-20 characters or input 0 to exit.\n";
-        return 0;
-    }
-    else if (!check_alnum(user_id)) {
-        cout << "\nUser ID has to be alphanumeric. Please input a user ID between 5-20 characters or input 0 to exit.\n";
-        return 0;
-    }
-    return 1;
-}
-
-// Function to check whether the input password for registration or reset is valid
-int check_password_validity(char* user_password, int pass_len) {
-    if (pass_len < 5) {
-        cout << "\nPassword is too short. Please input a password between 5-20 characters or input 0 to exit.\n";
-        return 0;
-    }
-    else if (pass_len > 20) {
-        cout << "\nPassword is too long. Please input a password between 5-20 characters or input 0 to exit.\n";
-        return 0;
-    }
-    else if (!check_alnum(user_password)) {
-        cout << "\nPassword has to be alphanumeric. Please input a password between 5-20 characters or input 0 to exit. \n";
-        return 0;
-    }
-    return 1;
-}
-
-// Function to check whether there are punctuations or prohibited characters in a string
-int check_alnum(char* string_check){
-    int i;
-    int string_length = strlen(string_check);
-    // Return 0 if any of the characters in the string are non-alphanumeric
-    for (i = 0; i < string_length; i++) {
-        if(!isalnum(string_check[i])) {
-            return 0;
-        }
-    }
-    return 1;
-}
-
 // Function to check how many registered accounts are recorded in the file
 void check_num_accounts(int *num_accounts) {
     fstream loginfile;
@@ -255,7 +201,7 @@ void check_num_accounts(int *num_accounts) {
 }
 
 // Function to retrieve all registered user ID and passwords 
-AccountDetails* retrieve_account_details (AccountDetails* accounts, int num_accounts){
+AccountDetails* retrieve_account_details(AccountDetails* accounts, int num_accounts){
     int i;
     int account_number = 0;
     for (i = 0; i < num_accounts; i++) {
@@ -338,15 +284,17 @@ void reset_password(AccountDetails reset_account, int account_number) {
     fstream new_loginfile;
     new_loginfile.open("loginfile2.txt", ios::app);
     string line;
-    string reset_account_detail = string(reset_account.user_id) + "," + string(reset_account.user_password) + "," + to_string(reset_account.balance) + ",";
+    int line_num = 0;
     while (loginfile >> ws, getline(loginfile, line)) {
         // Replace the password for the account in question
-        if (reset_account_detail == line) {
+        if (line_num == account_number) {
             new_loginfile << reset_account.user_id << "," << new_password << "," << reset_account.balance << "," << endl;
+            line_num += 1;
         }
         // Preserve details of all other accounts
         else {
             new_loginfile << line << endl;
+            line_num += 1;
         }
     }
     
@@ -358,19 +306,24 @@ void reset_password(AccountDetails reset_account, int account_number) {
     cout << "Your password has been changed. You can now login with your new password.\n\n";
 }
 
-// Function to let users interact with their account after successfully logging in (WIP)
-void account_activity(AccountDetails login_account) {
-    string decision;
+// Function to let users interact with their account after successfully logging in
+void account_activity(AccountDetails login_account, int account_number) {
+    int decision;
     do {
-        cout << "Welcome, " << login_account.user_id << "! Your current balance is " << login_account.balance <<". What would you like to do?\nPress 0 to exit.\n";
-        cin>>decision;
-        if (decision == "0") {
-            break;
+        cout << "Welcome, " << login_account.user_id << "! Your current balance is " << login_account.balance <<". What would you like to do?\nInput 1 to play high-low.\nInput 0 to exit.\n";
+        cin >> decision;
+        // Let users play high-low
+        if (decision == 1) {
+            login_account = high_low(login_account);
         }
-        else {
-            cout << "Input error!\n\n";
+        // Render other input as invalid
+        else if (decision != 0 || decision != 1) {
+            cout << "Input error!\n\n"; 
         }
-    } while (1);
+    } while (decision != 0);
+
+    // Update the user's account balance to the text file after any changes in their balance
+    write_account_balance(login_account, account_number);
     #if _WIN32  
         system("cls");
     #else
@@ -378,3 +331,81 @@ void account_activity(AccountDetails login_account) {
     #endif
 }
 
+// Function to let users play a game of high-low with a bot
+AccountDetails high_low(AccountDetails play_account) {
+    int bet_amount;
+    #if _WIN32  
+        system("cls");
+    #else
+        system("clear");
+    #endif
+    cout << "Welcome to High-Low! Here is how to play:\nYou bet a certain amount of money from your balance.\n"
+    "You and the host will be a generated a number between 1-20.\nYou win money equal to your bet if your number is higher than the host.\n"
+    "You lose your bet if your number is lower than the host.\nYour bet is returned in case of a tie.\n\n"
+    "How much would you like to bet? Your current balance is " << play_account.balance << ". Input 0 to exit.\n";
+    do {
+        // Ask users to input bet amount. It must be higher than 0 and must not exceed their existing balance
+        cin >> bet_amount;
+        if (bet_amount > play_account.balance) {
+            cout << "\nYour bet is higher than your available balance. Your balance is " << play_account.balance << ". Please input a lower bet or 0 to exit.";
+        }
+        else if (bet_amount == 0) {
+            #if _WIN32  
+                system("cls");
+            #else
+                system("clear");
+            #endif
+            return play_account;
+        }
+        else if (bet_amount < 0) {
+            cout << "\nInvalid bet amount! Please input a bet higher than 0:\n";
+        }
+    } while (bet_amount > play_account.balance || bet_amount < 0);
+    // Generate a random number between 1-20 for both the player and the host
+    int player_number = rand() % 20 + 1; 
+    int host_number = rand() % 20 + 1;
+    cout << "Your number is " <<  player_number << ".\n";
+    cout << "The host's number is " << host_number << ".\n";
+    // Update the account's balance depending on the results
+    if (player_number > host_number) {
+        cout << "You win " << bet_amount << " credits!\n\n\n";
+        play_account.alter_balance(bet_amount);
+    }
+    else if (player_number == host_number) {
+        cout << "It's a tie! Your bet is returned.\n\n\n";
+    }
+    else {
+        cout << "You lose " << bet_amount << " credits!\n\n\n";
+        play_account.alter_balance(-bet_amount);
+    }
+    return play_account;
+}
+
+// Function to update the account's balance to the text file after playing
+void write_account_balance(AccountDetails login_account, int account_number) {
+    int line_num = 0;
+    fstream loginfile;
+    loginfile.open("loginfile.txt", ios::in);
+
+    // Create a new temporary file that contains the user's final balance
+    fstream new_loginfile;
+    new_loginfile.open("loginfile2.txt", ios::app);
+    string line;
+    string update_account = string(login_account.user_id) + "," + string(login_account.user_password) + "," + to_string(login_account.balance) + ",";
+    while (loginfile >> ws, getline(loginfile, line)) {
+        if (line_num != account_number) {
+            new_loginfile << line << endl;
+            line_num += 1;
+        }
+        else {
+            new_loginfile << update_account << endl;
+            line_num += 1;
+       }
+    }
+    
+    // Remove the old login file and replace it with the updated one
+    loginfile.close();
+    new_loginfile.close();
+    remove("loginfile.txt");
+    rename("loginfile2.txt", "loginfile.txt");
+} 

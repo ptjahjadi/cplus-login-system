@@ -6,7 +6,7 @@ using namespace std;
 int main() {
     // Detect the computer's operating system and either use cls for Windows or clear for Unix
     #if _W32
-        systeINm("cls");
+        system("cls");
     #else
         system("clear");
     #endif
