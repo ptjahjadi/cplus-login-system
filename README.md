@@ -17,6 +17,7 @@ The program is divided into phases (WIP):
 * 'main.cpp': Contains the main function file, written in C++. This includes the main menu and prompt to register or login.
 * 'functions.cpp': Contains the functions used for this program including registering an account and logging in, written in C++.
 * 'functions.h': Header file that contains all C++ macros, function prototypes and classes for this program.
+* 'validity.cpp': Contains the functions used to check whether a user ID or password is valid for use.
 * 'loginfile.txt': Contains the file that stores user ID and passwords. 
 
 ## Setting Up
