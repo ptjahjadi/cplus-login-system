@@ -1,8 +1,14 @@
 #ifndef FUNCTIONS_H_INCLUDED
-#define FUNCTIONS_H_INCLUDED
+#define FUNCTIONS_H_INCLUDED    
+
+#include <string>
+using namespace std;
 
 // Assume that the longest possible input is 999 characters long
 #define MAX_LENGTH 999
+
+// There are 13 different values between 2 and A.
+#define PLAYING_CARD_VAL_SIZE 13
 
 class AccountDetails {
     public:
@@ -30,8 +36,13 @@ int check_alnum(char* string_check);
 void check_num_accounts(int *num_accounts);
 AccountDetails* retrieve_account_details (AccountDetails* accounts, int num_accounts);
 void reset_password(AccountDetails reset_account, int account_number);
-void account_activity(AccountDetails login_account, int account_number);
-AccountDetails high_low(AccountDetails play_account);
+void account_activity(AccountDetails login_account, int account_number);\
+AccountDetails play_game(AccountDetails play_account, int account_number, string game_number);
+void announce_game (AccountDetails play_account, string game_number);
+int check_bet_validity (AccountDetails play_account, int bet_amount);
+AccountDetails high_low(AccountDetails play_account, int bet_amount);
+AccountDetails casino_war(AccountDetails play_account, int bet_amount);
+AccountDetails blackjack(AccountDetails play_account, int bet_amount);
 void write_account_balance(AccountDetails login_account, int account_number);
 
 #endif

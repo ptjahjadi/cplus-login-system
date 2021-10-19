@@ -285,10 +285,11 @@ void reset_password(AccountDetails reset_account, int account_number) {
     new_loginfile.open("loginfile2.txt", ios::app);
     string line;
     int line_num = 0;
+    string update_password = string(reset_account.user_id) + "," + string(new_password) + "," + to_string(reset_account.balance) + ",";
     while (loginfile >> ws, getline(loginfile, line)) {
         // Replace the password for the account in question
         if (line_num == account_number) {
-            new_loginfile << reset_account.user_id << "," << new_password << "," << reset_account.balance << "," << endl;
+            new_loginfile << update_password << endl;
             line_num += 1;
         }
         // Preserve details of all other accounts
@@ -308,22 +309,20 @@ void reset_password(AccountDetails reset_account, int account_number) {
 
 // Function to let users interact with their account after successfully logging in
 void account_activity(AccountDetails login_account, int account_number) {
-    int decision;
+    string decision;
     do {
-        cout << "Welcome, " << login_account.user_id << "! Your current balance is " << login_account.balance <<". What would you like to do?\nInput 1 to play high-low.\nInput 0 to exit.\n";
+        cout << "Welcome, " << login_account.user_id << "! Your current balance is " << login_account.balance <<". What would you like to do?\nInput 1 to play High-Low.\nInput 2 to play Casino War.\nInput 3 to play Blackjack.\nInput 0 to exit.\n";
         cin >> decision;
         // Let users play high-low
-        if (decision == 1) {
-            login_account = high_low(login_account);
+        if (decision == "1" || decision == "2" || decision == "3") {
+            login_account = play_game(login_account, account_number, decision);
         }
         // Render other input as invalid
-        else if (decision != 0 || decision != 1) {
+        else if (decision != "0") {
             cout << "Input error!\n\n"; 
         }
-    } while (decision != 0);
+    } while (decision != "0");
 
-    // Update the user's account balance to the text file after any changes in their balance
-    write_account_balance(login_account, account_number);
     #if _WIN32  
         system("cls");
     #else
@@ -331,81 +330,3 @@ void account_activity(AccountDetails login_account, int account_number) {
     #endif
 }
 
-// Function to let users play a game of high-low with a bot
-AccountDetails high_low(AccountDetails play_account) {
-    int bet_amount;
-    #if _WIN32  
-        system("cls");
-    #else
-        system("clear");
-    #endif
-    cout << "Welcome to High-Low! Here is how to play:\nYou bet a certain amount of money from your balance.\n"
-    "You and the host will be a generated a number between 1-20.\nYou win money equal to your bet if your number is higher than the host.\n"
-    "You lose your bet if your number is lower than the host.\nYour bet is returned in case of a tie.\n\n"
-    "How much would you like to bet? Your current balance is " << play_account.balance << ". Input 0 to exit.\n";
-    do {
-        // Ask users to input bet amount. It must be higher than 0 and must not exceed their existing balance
-        cin >> bet_amount;
-        if (bet_amount > play_account.balance) {
-            cout << "\nYour bet is higher than your available balance. Your balance is " << play_account.balance << ". Please input a lower bet or 0 to exit.";
-        }
-        else if (bet_amount == 0) {
-            #if _WIN32  
-                system("cls");
-            #else
-                system("clear");
-            #endif
-            return play_account;
-        }
-        else if (bet_amount < 0) {
-            cout << "\nInvalid bet amount! Please input a bet higher than 0:\n";
-        }
-    } while (bet_amount > play_account.balance || bet_amount < 0);
-    // Generate a random number between 1-20 for both the player and the host
-    int player_number = rand() % 20 + 1; 
-    int host_number = rand() % 20 + 1;
-    cout << "Your number is " <<  player_number << ".\n";
-    cout << "The host's number is " << host_number << ".\n";
-    // Update the account's balance depending on the results
-    if (player_number > host_number) {
-        cout << "You win " << bet_amount << " credits!\n\n\n";
-        play_account.alter_balance(bet_amount);
-    }
-    else if (player_number == host_number) {
-        cout << "It's a tie! Your bet is returned.\n\n\n";
-    }
-    else {
-        cout << "You lose " << bet_amount << " credits!\n\n\n";
-        play_account.alter_balance(-bet_amount);
-    }
-    return play_account;
-}
-
-// Function to update the account's balance to the text file after playing
-void write_account_balance(AccountDetails login_account, int account_number) {
-    int line_num = 0;
-    fstream loginfile;
-    loginfile.open("loginfile.txt", ios::in);
-
-    // Create a new temporary file that contains the user's final balance
-    fstream new_loginfile;
-    new_loginfile.open("loginfile2.txt", ios::app);
-    string line;
-    string update_account = string(login_account.user_id) + "," + string(login_account.user_password) + "," + to_string(login_account.balance) + ",";
-    while (loginfile >> ws, getline(loginfile, line)) {
-        if (line_num != account_number) {
-            new_loginfile << line << endl;
-            line_num += 1;
-        }
-        else {
-            new_loginfile << update_account << endl;
-            line_num += 1;
-       }
-    }
-    
-    // Remove the old login file and replace it with the updated one
-    loginfile.close();
-    new_loginfile.close();
-    remove("loginfile.txt");
-    rename("loginfile2.txt", "loginfile.txt");
-} 

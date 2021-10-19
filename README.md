@@ -1,5 +1,5 @@
 # CPLUS Login System
-Create an account with this program and interact with the program using your accounts!
+Create an account with this program and play games using your accounts!
 ## Aim
 The aim of this project is to let users store their ID and passwords. Future work would include features that let users interact with their accounts. This program is written in C++.
 
@@ -11,15 +11,21 @@ The program is divided into phases (WIP):
 * Phase 2B (7 Aug 2021): Split the code into 3 files: the main file, function file, and header file. Users can now reset their password if they forgot their password after registering.
 * Phase 2C (29 Aug 2021): Fixes to the reset password feature: the program does not accept password resets if the new password is too short, long or contains non-alphanumeric characters. New users must also confirm their password by entering it twice before registering.
 * Phase 3A (18 Sep 2021): Included a new game "high-low", where users can play to win more balance. 
+* Phase 3B (19 Oct 2021): Included two new games: "Casino War" and "Blackjack". Blackjack is currently in-development.
 
 ## Guide
 * 'login' : Contains the program that is used to register or login to user's accounts.
 * 'main.cpp': Contains the main function file, written in C++. This includes the main menu and prompt to register or login.
-* 'functions.cpp': Contains the functions used for this program including registering an account and logging in, written in C++.
+* 'games.cpp': Contains the code for all games implemented in this program.
+* 'accounts.cpp': Contains the code to manage user accounts such as logging in and resetting password
 * 'functions.h': Header file that contains all C++ macros, function prototypes and classes for this program.
+* 'validity.cpp': Contains the functions used to check whether a user ID or password is valid for use.
 * 'loginfile.txt': Contains the file that stores user ID and passwords. 
 
 ## Setting Up
 This program is written using Visual Studio Code in Ubuntu, but can be run using any mainstream operating system and can be written in any IDE. 
 In order to modify this program and compile it, pleasure ensure you have a G++ compiler. [Steven Zeil's tutorial](https://www.cs.odu.edu/~zeil/cs250PreTest/latest/Public/installingACompiler/) provides a great guide to set up the compiler.
 Any command-line interpreter can be used to run the program (Windows CMD, Ubuntu Terminal, etc.).
+
+## Future Work
+Future updates for Phase 3C include developing two values for Aces (1 and 11, currently Ace has a value of only 1), and an insurance system when the host's face up card is an Ace for the BLackjack game.

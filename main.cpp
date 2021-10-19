@@ -13,7 +13,7 @@ int main() {
     // Ask the user to register, login or exit
     string decision;
     do {
-        cout << "Welcome! What would you like to do?\nPress 1 to register.\nPress 2 to login.\nPress 0 to exit.\n";
+        cout << "Welcome! What would you like to do?\nInput 1 to register.\nInput 2 to login.\nInput 0 to exit.\n";
         cin >> decision;
         if (decision == "1") {
             registration();
